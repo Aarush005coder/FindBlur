@@ -38,6 +38,13 @@ Instead of relying on a simple blur/no-blur rule, it combines multiple image-det
 
 </div>
 
+<div align="center">
+
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-FindBlur-2ea44f?style=for-the-badge)](https://findblur-hvflnggfs2adoxzgy26wvg.streamlit.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/Aarush005coder/FindBlur)
+
+</div>
+
 ---
 
 ## ✨ Features
