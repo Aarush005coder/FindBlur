@@ -1,69 +1,75 @@
-# FindBlur
+# 🔎 FindBlur
 
 ### Know before you post.
 
-**FindBlur** is a lightweight image blur and sharpness detection tool built with **Python, Streamlit, and OpenCV**.
+**FindBlur** is an image blur and sharpness detection tool built with **Python, Streamlit, and OpenCV**.
 
-It analyzes image detail using **Laplacian variance** as the primary signal and **FFT high-frequency analysis** as a secondary signal, then combines both measurements to classify an image as **Sharp, Borderline, or Blurry**.
-
-> A quick second opinion before you publish an image.
+It combines **Laplacian variance** with **FFT high-frequency analysis** to evaluate image sharpness and classify images into **Sharp, Borderline, or Blurry**.
 
 ---
 
 ## 🚀 Live Demo
 
-**Try FindBlur:** `https://findblur.streamlit.app`
+### 👉 [Try FindBlur](https://findblur-hvflnggfs2adoxzgy26wvg.streamlit.app/)
 
-> Replace the URL above with your actual Streamlit deployment URL after deployment.
+**Know before you post.**
+
+---
+
+## 📸 What FindBlur Does
+
+FindBlur gives you a quick second opinion on image sharpness before you publish or use an image.
+
+Instead of relying on a simple blur/no-blur rule, it combines multiple image-detail signals and gives you a three-level result:
+
+🟢 **Sharp**
+🟡 **Borderline**
+🔴 **Blurry**
 
 ---
 
 ## ✨ Features
 
-### 🔍 Dual-Metric Blur Detection
+### 🔍 Dual-Metric Detection
 
-FindBlur doesn't depend on a single measurement.
+FindBlur combines two complementary image-analysis techniques:
 
-* **Laplacian Variance** — primary sharpness signal
-* **FFT High-Frequency Analysis** — secondary validation
-* **Weighted score combination** — reduces false positives
-* **Confidence-based verdicts**
+* **Laplacian Variance** — primary sharpness measurement
+* **FFT Analysis** — high-frequency detail validation
+* **Weighted score combination**
+* **Confidence-based classification**
 
-### 🎯 Three-Level Classification
+### 🎯 Three-Level Verdict
 
-Instead of a simple blur/no-blur decision:
-
-| Verdict           | Meaning                                           |
-| ----------------- | ------------------------------------------------- |
-| 🟢 **Sharp**      | Strong fine-detail response                       |
-| 🟡 **Borderline** | Close to the threshold; manual review recommended |
-| 🔴 **Blurry**     | Insufficient fine detail detected                 |
+| Verdict           | Meaning                                 |
+| ----------------- | --------------------------------------- |
+| 🟢 **Sharp**      | Strong fine-detail response             |
+| 🟡 **Borderline** | Close to the threshold; review manually |
+| 🔴 **Blurry**     | Insufficient fine detail detected       |
 
 ### ⚙️ Adjustable Detection
 
-Tune the detector according to your images:
+* Laplacian threshold from `0–1000`
+* Strict sensitivity
+* Balanced sensitivity
+* Lenient sensitivity
+* Adjustable metric weighting
+* Borderline detection margin
 
-* Laplacian threshold: `0–1000`
-* **Strict** sensitivity
-* **Balanced** sensitivity
-* **Lenient** sensitivity
-* Configurable Laplacian/FFT weighting
-* Automatic borderline margin
+### 🖼️ Single Image Analysis
 
-### 📷 Single Image Analysis
-
-Upload:
+Supported formats:
 
 * JPG
 * JPEG
 * PNG
 * WEBP
 
-Get an immediate analysis with:
+Analyze an image and view:
 
 * Original image
 * Edge map
-* Laplacian heatmap
+* Laplacian visualization
 * Laplacian score
 * FFT score
 * Combined score
@@ -82,156 +88,106 @@ Includes:
 * Verdicts
 * Sorting
 * Filtering
-* Manual review status
+* Manual review
 * CSV export
 
-### 📹 Live Camera
+### 📷 Live Camera
 
-Use Streamlit's camera input to capture an image and analyze its sharpness directly.
+Capture an image directly from your browser and analyze its sharpness using Streamlit's camera input.
 
 ### 🧭 Visual Diagnostics
 
-FindBlur provides additional visual context using:
+FindBlur provides visual analysis using:
 
 * Canny edge detection
-* Laplacian-based detail visualization
+* Laplacian detail visualization
 * Original vs. diagnostic comparison
 
 ### 📝 Manual Review
 
-Mark results as:
+Results can be marked as:
 
 * ✓ Correct
 * ! Disagree
 * Not reviewed
 
-Review information is stored in the current Streamlit session without requiring a database.
+Review information is maintained through Streamlit session state.
 
 ---
 
-# 🧠 How FindBlur Works
+# 🧠 How It Works
 
-FindBlur combines two different signals to make the detection more reliable.
+FindBlur uses two different signals to make the detection more reliable.
 
 ```text
-                    Input Image
-                         │
-                         ▼
-                    Grayscale
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-              ▼                     ▼
-      Laplacian Variance       FFT Analysis
-              │                     │
-              ▼                     ▼
-       Detail Strength        High-Frequency
-                              Energy
-              │                     │
-              └──────────┬──────────┘
-                         ▼
-                  Score Normalization
-                         │
-                         ▼
-                  Weighted Combination
-                         │
-                         ▼
-                Sensitivity Adjustment
-                         │
-                         ▼
-             ┌───────────┼───────────┐
-             ▼           ▼           ▼
-          SHARP      BORDERLINE    BLURRY
+                         IMAGE
+                           │
+                           ▼
+                       GRAYSCALE
+                           │
+                ┌──────────┴──────────┐
+                │                     │
+                ▼                     ▼
+        LAPLACIAN VARIANCE        FFT ANALYSIS
+                │                     │
+                ▼                     ▼
+          EDGE DETAIL          HIGH-FREQUENCY
+             SIGNAL                ENERGY
+                │                     │
+                └──────────┬──────────┘
+                           ▼
+                    NORMALIZATION
+                           │
+                           ▼
+                    WEIGHTED SCORE
+                           │
+                           ▼
+                  SENSITIVITY CHECK
+                           │
+             ┌─────────────┼─────────────┐
+             ▼             ▼             ▼
+          SHARP       BORDERLINE       BLURRY
 ```
 
-## Laplacian Variance
+---
 
-The primary metric is:
+## 🔬 Laplacian Variance
+
+The primary sharpness metric is calculated using:
 
 ```python
 cv2.Laplacian(gray, cv2.CV_64F).var()
 ```
 
-Sharp images generally contain more fine edges and local intensity changes, producing a higher Laplacian variance.
+Sharp images generally contain more fine edges and local intensity changes, producing a stronger Laplacian response.
 
-Blurry images tend to lose fine detail, resulting in a lower value.
+Blurry images tend to lose fine detail, resulting in lower variance.
 
-## FFT Analysis
+---
 
-FindBlur also examines the frequency content of the image using the **Fast Fourier Transform**.
+## 📊 FFT High-Frequency Analysis
+
+FindBlur also analyzes the image in the frequency domain using **Fast Fourier Transform**.
 
 High-frequency components generally represent fine image detail and edges.
 
-FFT provides a second signal that helps prevent the detector from blindly treating every low-texture image as blurry.
-
-For example:
-
-* A plain wall
-* Clear sky
-* Smooth background
-
-may naturally contain very little high-frequency information even when the photograph itself is perfectly focused.
+This provides a secondary signal that helps cross-check the Laplacian result, particularly for images containing large low-texture areas.
 
 ---
 
-# 📊 Combined Detection
-
-Raw Laplacian and FFT values operate on different numerical scales, so FindBlur does not simply average them.
-
-Instead:
-
-```text
-Laplacian Score
-       │
-       ▼
-   Normalize
-       │
-       ├──────────────┐
-       │              │
-       ▼              ▼
-FFT Score        Laplacian
-   │              Weight
-   ▼                │
-Normalize            │
-   │                │
-   └───────┬────────┘
-           ▼
-     Combined Score
-           │
-           ▼
-      Classification
-```
-
-The default weighting prioritizes Laplacian variance while allowing FFT analysis to provide additional validation.
-
----
-
-# 🎚️ Sensitivity Modes
-
-FindBlur provides three detection modes.
+## 🎚️ Sensitivity Modes
 
 ### Strict
 
-Designed to flag potentially soft images more aggressively.
-
-Useful when image quality matters heavily.
+More aggressive detection for potentially soft images.
 
 ### Balanced
 
-The default mode.
-
-Designed for general-purpose image checking.
+Default mode for general-purpose image checking.
 
 ### Lenient
 
-More tolerant of images with naturally low texture.
-
-Useful for:
-
-* Landscapes
-* Product backgrounds
-* Minimalist photography
-* Low-detail scenes
+More tolerant of naturally low-texture images.
 
 ---
 
@@ -239,30 +195,24 @@ Useful for:
 
 ## Single Check
 
-Upload an image and immediately see:
+Upload an image and receive:
 
 ```text
-┌──────────────────────┐
-│                      │
-│       ORIGINAL       │
-│                      │
-└──────────────────────┘
-
-           ↓
-
 Laplacian       284.2
 FFT Energy       81.3
 Combined        251.1
 Confidence       94%
 
-        ✓ SHARP
+✓ SHARP
+
+Strong detail detected.
 ```
 
 ---
 
 ## Batch Check
 
-Process an entire group of images:
+Analyze an entire collection of images:
 
 ```text
 Thumbnail | Filename | Laplacian | FFT | Combined | Verdict
@@ -272,22 +222,22 @@ Thumbnail | Filename | Laplacian | FFT | Combined | Verdict
           | img3.jpg | 32.1      | 28  | 30.4     | Blurry
 ```
 
-Results can be filtered, sorted, reviewed, and exported.
+Results can be filtered, sorted, reviewed, and exported as CSV.
 
 ---
 
-## 📹 Live Camera
+## 📷 Live Camera
 
-Capture an image directly through your browser:
+Capture → Analyze → Review.
 
 ```text
 Camera
    ↓
 Capture
    ↓
-Analyze
+Laplacian + FFT
    ↓
-Score
+Combined Score
    ↓
 Verdict
 ```
@@ -296,15 +246,53 @@ Verdict
 
 # 🛠️ Tech Stack
 
-| Technology     | Purpose                         |
-| -------------- | ------------------------------- |
-| **Python**     | Application and detection logic |
-| **Streamlit**  | Web interface                   |
-| **OpenCV**     | Image processing                |
-| **NumPy**      | Numerical and FFT operations    |
-| **Pandas**     | Batch results and CSV export    |
-| **Pillow**     | Image handling                  |
-| **Matplotlib** | Diagnostic visualizations       |
+<div align="center">
+
+### Core
+
+<a href="https://www.python.org/">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="55" alt="Python"/>
+</a>
+&nbsp;&nbsp;
+
+<a href="https://opencv.org/">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg" width="55" alt="OpenCV"/>
+</a>
+&nbsp;&nbsp;
+
+<a href="https://streamlit.io/">
+<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" width="55" alt="Streamlit"/>
+</a>
+
+### Data & Image Processing
+
+<a href="https://numpy.org/">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg" width="55" alt="NumPy"/>
+</a>
+&nbsp;&nbsp;
+
+<a href="https://pandas.pydata.org/">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" width="55" alt="Pandas"/>
+</a>
+&nbsp;&nbsp;
+
+<a href="https://matplotlib.org/">
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Matplotlib_icon.svg" width="55" alt="Matplotlib"/>
+</a>
+
+</div>
+
+### Technology Overview
+
+| Technology        | Role                                 |
+| ----------------- | ------------------------------------ |
+| 🐍 **Python**     | Application and detection logic      |
+| 🎈 **Streamlit**  | Web interface and deployment         |
+| 👁️ **OpenCV**    | Image processing and computer vision |
+| 🔢 **NumPy**      | Numerical computation and FFT        |
+| 🐼 **Pandas**     | Batch results and CSV export         |
+| 🖼️ **Pillow**    | Image loading and processing         |
+| 📈 **Matplotlib** | Diagnostic visualizations            |
 
 ---
 
@@ -332,7 +320,7 @@ FindBlur/
     └── config.toml
 ```
 
-The detection engine is intentionally separated from the UI so that the computer-vision logic can be tested and extended independently.
+The detection engine is separated from the UI so the computer-vision logic can be maintained and extended independently.
 
 ---
 
@@ -342,16 +330,16 @@ The detection engine is intentionally separated from the UI so that the computer
 
 * Python 3.11+
 * Git
-* A modern web browser
+* Modern web browser
 
-## 1. Clone the Repository
+## Clone the Repository
 
 ```bash
 git clone https://github.com/Aarush005coder/FindBlur.git
 cd FindBlur
 ```
 
-## 2. Create a Virtual Environment
+## Create Virtual Environment
 
 ### Windows
 
@@ -367,19 +355,19 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-## 3. Install Dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 4. Run FindBlur
+## Run Locally
 
 ```bash
 streamlit run app.py
 ```
 
-The application will open locally at:
+Open:
 
 ```text
 http://localhost:8501
@@ -389,45 +377,31 @@ http://localhost:8501
 
 # ☁️ Deployment
 
-FindBlur can be deployed directly from GitHub using **Streamlit Community Cloud**.
-
-Basic workflow:
+FindBlur is deployed using **Streamlit Community Cloud**.
 
 ```text
-Local Project
-     │
-     ▼
-   Git
-     │
-     ▼
-  GitHub
-     │
-     ▼
+Local Development
+       │
+       ▼
+      Git
+       │
+       ▼
+    GitHub
+       │
+       ▼
 Streamlit Cloud
-     │
-     ▼
- Public App
+       │
+       ▼
+  🌐 FindBlur
 ```
 
-After pushing the repository to GitHub:
+### Live Application
 
-1. Open Streamlit Community Cloud.
-2. Connect your GitHub account.
-3. Select the `FindBlur` repository.
-4. Select the `main` branch.
-5. Set the main file to:
-
-```text
-app.py
-```
-
-6. Deploy.
+**[Launch FindBlur](https://findblur-hvflnggfs2adoxzgy26wvg.streamlit.app/)**
 
 ---
 
 # 📦 Dependencies
-
-The main dependencies are:
 
 ```text
 streamlit
@@ -438,7 +412,7 @@ Pillow
 matplotlib
 ```
 
-Install everything with:
+Install with:
 
 ```bash
 pip install -r requirements.txt
@@ -448,43 +422,41 @@ pip install -r requirements.txt
 
 # ⚠️ Limitations
 
-FindBlur is a **sharpness-analysis tool**, not a complete image-quality or photographic-quality evaluator.
+FindBlur is a **sharpness-analysis tool**, not a complete image-quality evaluator.
 
-A low sharpness score does not necessarily mean that an image is technically bad.
+A low score does not necessarily mean that an image is bad.
 
-For example:
+Potential edge cases include:
 
-* Intentionally soft photography may be classified as borderline.
-* Images with very little texture can be difficult to evaluate.
-* Artistic blur may be intentional.
-* Different cameras and resolutions can produce different score ranges.
-* Very noisy images can contain strong high-frequency signals.
+* Intentionally soft photography
+* Very low-texture images
+* Artistic blur
+* Extremely noisy images
+* Different camera resolutions
+* Images with naturally limited fine detail
 
-For this reason, FindBlur includes the **Borderline** category and manual review functionality.
+The **Borderline** classification exists specifically to avoid treating every uncertain case as a definite failure.
 
 ---
 
 # 🔮 Future Improvements
 
-Potential future improvements include:
-
-* [ ] Automatic threshold calibration by image resolution
 * [ ] Region-based blur detection
 * [ ] Motion-blur detection
 * [ ] Focus-area detection
-* [ ] More robust low-texture handling
+* [ ] Resolution-aware threshold calibration
+* [ ] Automatic threshold calibration
 * [ ] Image-quality history
-* [ ] Batch folder processing
 * [ ] PDF report generation
-* [ ] Detection benchmarking dataset
-* [ ] Automated threshold calibration
-* [ ] Performance optimization for very large batches
+* [ ] Benchmark dataset
+* [ ] Large-batch performance improvements
+* [ ] More robust low-texture image handling
 
 ---
 
 # 📸 Screenshots
 
-Add screenshots of the application here:
+Add screenshots here once you have them:
 
 ```text
 docs/
@@ -494,37 +466,37 @@ docs/
 └── settings.png
 ```
 
-Then include them in the README:
+Example:
 
 ```markdown
 ## Screenshots
 
 ### Single Check
 
-![Single Check](docs/single-check.png)
+![FindBlur Single Check](docs/single-check.png)
 
 ### Batch Analysis
 
-![Batch Check](docs/batch-check.png)
+![FindBlur Batch Analysis](docs/batch-check.png)
 
 ### Live Camera
 
-![Live Camera](docs/live-camera.png)
+![FindBlur Live Camera](docs/live-camera.png)
 ```
 
 ---
 
 # 🤝 Contributing
 
-Contributions, ideas, and improvements are welcome.
+Contributions and improvements are welcome.
 
-If you'd like to contribute:
+Create a feature branch:
 
 ```bash
 git checkout -b feature/your-feature
 ```
 
-Make your changes, test them locally, and open a pull request.
+Make your changes, test them locally, and submit a pull request.
 
 ---
 
@@ -538,16 +510,20 @@ See the `LICENSE` file for details.
 
 # 👨‍💻 Author
 
-**Aarush Khandelwal**
+### Aarush Khandelwal
 
-Built with Python, OpenCV, and Streamlit.
+Built with **Python, OpenCV, and Streamlit**.
 
 ---
 
-## FindBlur
+<div align="center">
 
-> **Know before you post.**
+## 🔎 FindBlur
 
-A simple idea:
+### Know before you post.
 
-**Look at the image. Measure the detail. Make a better call.**
+**[🚀 Try the Live App](https://findblur-hvflnggfs2adoxzgy26wvg.streamlit.app/)**
+
+⭐ If you find FindBlur useful, consider giving the repository a star.
+
+</div>
